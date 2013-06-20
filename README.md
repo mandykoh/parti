@@ -8,4 +8,12 @@ You could also describe it as a physics simulator which uses [Verlet integration
 
 See the [reference documentation](http://naucera.github.io/parti/reference/) for live examples.
 
+To get Parti, run:
+
+    git clone https://github.com/naucera/parti.git parti
+    cd parti
+    make
+
+The library will be found in the `dist` directory.
+
 Parti is released under an MIT License. See [LICENSE.txt](//github.com/naucera/parti/blob/master/LICENSE.txt) for the licensing terms.
