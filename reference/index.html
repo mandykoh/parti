@@ -13,6 +13,7 @@
 
 			<h2>Contents</h2>
 			<ul class="contents">
+				<li><a href="#what-is-it">What is it?</a></li>
 				<li><a href="#where-do-i-get">Where do I get it?</a></li>
 				<li>
 					<a href="#what-can-i-do">What can I do with it?</a>
@@ -35,6 +36,11 @@
 			</ul>
 
 
+			<h2 id="what-is-it">What is it?</h2>
+			<p>Parti is a dots-and-sticks physics library for JavaScript.</p>
+			<p>You could also describe it as a physics simulator which uses <a href="http://en.wikipedia.org/wiki/Verlet_integration">Verlet integration</a> to iteratively and non-conservatively solve spatial constraints on a set of particles, if you're into that sort of thing.</p>
+
+
 			<h2 id="where-do-i-get">Where do I get it?</h2>
 			<p>The latest version of Parti is available on <a href="http://github.com/naucera/parti/">GitHub</a> under an MIT license. See the <a href="http://github.com/naucera/parti/blob/master/LICENSE.txt">licensing terms</a> for more information.</p>
 
@@ -42,7 +48,7 @@
 			<h2 id="what-can-i-do">What can I do with it?</h2>
 			<p>Parti is a particle based physics simulator; you create a <a href="#model">Model</a>, describe to it a number of <a href="#particles">Particles</a> and <a href="#constraints">Constraints</a>, tell it to <a href="#simulation">update</a> as often as you'd like, and then do something with the outcome.</p>
 			<p>Parti doesn't do any rendering by itself &mdash; there are many potential ways to use the output so rendering is left to you.</p>
-			<p>The following are some examples of things it can do.</p>
+			<p>The following are some examples of things it can do and some ways of using it.</p>
 
 			<h3 id="dom-demo">Animate DOM Elements</h3>
 			<p>Particle positions can be applied to DOM elements so that they act like physical objects.</p>
@@ -77,9 +83,100 @@
 			<h2 id="how-do-i-use">How do I use it?</h2>
 
 			<h3 id="models">Models</h3>
+			<p>Parti's simulations are called Models. You can create a model like this:</p>
+			<pre>
+var model = new Parti.Model(options);
+			</pre>
+			<p>The <code>option</code> parameter is optional, but can be an object with the following properties:</p>
+			<pre>
+{
+    radius: <em>number</em>,    // default radius for particles, 0 if not specified
+    friction: <em>number</em>,  // default friction for particles, 0 if not specified
+}
+			</pre>
+			<p>Models have the following properties:</p>
+			<pre>
+{
+    particles: <em>array of Particles</em>,      // Particles currently in the model
+    constraints: <em>array of Constraints</em>,  // Constraints currently in the model
+}
+			</pre>
+
 			<h3 id="particles">Particles</h3>
+			<p>Once you have a model, you can add particles to it like this:</p>
+			<pre>
+var particle = model.newParticle(x, y, options);
+			</pre>
+			<p>The <code>x</code> and <code>y</code> parameters define the starting position of the particle, and the <code>option</code> parameter is an optional value of the form:
+			<pre>
+{
+    radius: <em>number</em>,     // radius for the particle, model default if not specified
+    friction: <em>number</em>,   // friction for the particle, model default if not specified
+    data: <em>anything</em>,     // arbitrary value to associate with the particle
+}
+			</pre>
+			<p>If you specify the <code>data</code> parameter, the value can be retrieved using the <code>getData()</code> method like this:</p>
+			<pre>
+var data = particle.getData();
+			</pre>
+			<p>This can be useful for storing references to DOM elements for DOM animation.</p>
+			<p>Particles have the following properties:</p>
+			<pre>
+{
+    posX: <em>number</em>,      // Current horizontal position
+    posY: <em>number</em>,      // Current vertical position
+    prevPosX: <em>number</em>,  // Last horizontal position
+    prevPosY: <em>number</em>,  // Last vertical position
+}
+			</pre>
+			<p>Instantaneous forces can be applied to a particle like this:</p>
+			<pre>
+particle.applyImpulse(x, y);
+			</pre>
+			<p>where <code>x</code> and <code>y</code> are the horizontal and vertical components of the force, respectively.</p>
+
 			<h3 id="constraints">Constraints</h3>
+			<p>Constraints are the basic way to make particles in your simulation do interesting things. By default, all particles will be under a special constraint to ensure that they do not enter each other's radii. Further constraints can be added like this:</p>
+			<pre>
+model.addConstraint(constraint);
+			</pre>
+			<p>Constraints are applied in the order they are added, which means that constraints added last take precedence over those added first.</p>
+			<p>A constraint is an object of the following form:</p>
+			<pre>
+{
+    apply: <em>function (particles) {}</em>
+}
+			</pre>
+			<p>The <code>apply()</code> function is passed an array of particles to act upon. Some constraints will use this, some won't (for example, if they only act on a single specific particle).</p>
+			<p>Parti comes with some basic, useful constraints:</p>
+			<pre>
+new Parti.DistanceConstraint(p1, p2, minDistance, maxDistance)
+			</pre>
+			<p>This creates a constraint which specifies that particles <code>p1</code> and <code>p2</code> must be at least <code>minDistance</code> apart, but no more than <code>maxDistance</code> apart. If <code>minDistance</code> or <code>maxDistance</code> are <code>null</code> or omitted, then they are effectively unrestricted.</p>
+			<pre>
+new Parti.PositionConstraint(particle, x, y)
+			</pre>
+			<p>This creates a constraint which specifies that a particle must be at the position specified by <code>x</code> and <code>y</code>. This is useful for pinning a particle to a specific location.</p>
+
 			<h3 id="simulation">Simulation</h3>
+			<p>Once you have a model set up with particles and constraints, it's time to run the simulation. This involves Parti trying to find a solution where all your particles are in positions which meet your constraints.</p>
+			<p>Parti is non-conservative; that is, it does not guarantee that constraints will be exactly met. Instead, you can think of Parti as attempting to loosely meet your constraints (even in cases where constraints may conflict with each other).</p>
+			<p>Here's how to have Parti update the movement of all particles and attempt to solve for your constraints:</p>
+			<pre>
+model.update(passes);
+			</pre>
+			<p>The <code>passes</code> parameter is optional; if present, it specifies the number of passes to calculate to attempt to satisfy all constraints. The default number of passes is 1. Higher values will mean less "loose" constraints, which translates to stiffer, less floppy or bendy structures, but will also require more computation.</p>
+			<p>After the <code>update()</code> method is called, the particles will be in new positions and the constraints will have been loosely met, more or less. The particles can then be processed like this:</p>
+			<pre>
+for (i = 0; i &lt; model.particles.length; ++i) {
+    p = model.particles[i];
+
+    // do something with p.posX and p.posY
+    ...
+}
+			</pre>
+			<p>For a continuous simulation, the basic approach is to do whatever needs to be done to all your particles (eg. apply impulse forces, etc), then call <code>update()</code>, then do something with the output, such as positioning DOM elements or rendering to a canvas. Then repeat the process.</p>
+
 
 			<footer>
 				<p>Copyright &copy; 2013 Amanda Koh.</p>

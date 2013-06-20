@@ -20,6 +20,10 @@ h3 {
 	font-size: 1.2rem;
 }
 
+pre {
+	margin-left: 32px;
+}
+
 footer {
 	margin-top: 96px;
 	font-size: 0.7rem;
