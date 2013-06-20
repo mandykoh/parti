@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Parti Reference</title>
+		<link rel="stylesheet" href="styles.css">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" type="text/javascript"></script>
+		<script src="../src/parti.js"></script>
+	</head>
+	<body>
+		<div class="content">
+
+			<h1>Parti Reference</h1>
+
+			<h2>Contents</h2>
+			<ul class="contents">
+				<li><a href="#where-do-i-get">Where do I get it?</a></li>
+				<li>
+					<a href="#what-can-i-do">What can I do with it?</a>
+					<ul>
+						<li><a href="#dom-demo">Animate DOM Elements</a></li>
+						<li><a href="#layout-demo">Automatic Layout</a></li>
+						<li><a href="#cloth-demo">Simulate Cloth</a></li>
+					</ul>
+				</li>
+				<li><a href="#what-cant-i-do">What <em>can't</em> I do with it?</a></li>
+				<li>
+					<a href="#how-do-i-use">How do I use it?</a>
+					<ul>
+						<li><a href="#models">Models</a></li>
+						<li><a href="#particles">Particles</a></li>
+						<li><a href="#constraints">Constraints</a></li>
+						<li><a href="#simulation">Simulation</a></li>
+					</ul>
+				</li>
+			</ul>
+
+
+			<h2 id="where-do-i-get">Where do I get it?</h2>
+			<p>The latest version of Parti is available on <a href="http://github.com/naucera/parti/">GitHub</a> under an MIT license. See the <a href="http://github.com/naucera/parti/blob/master/LICENSE.txt">licensing terms</a> for more information.</p>
+
+
+			<h2 id="what-can-i-do">What can I do with it?</h2>
+			<p>Parti is a particle based physics simulator; you create a <a href="#model">Model</a>, describe to it a number of <a href="#particles">Particles</a> and <a href="#constraints">Constraints</a>, tell it to <a href="#simulation">update</a> as often as you'd like, and then do something with the outcome.</p>
+			<p>Parti doesn't do any rendering by itself &mdash; there are many potential ways to use the output so rendering is left to you.</p>
+			<p>The following are some examples of things it can do.</p>
+
+			<h3 id="dom-demo">Animate DOM Elements</h3>
+			<p>Particle positions can be applied to DOM elements so that they act like physical objects.</p>
+			<div class="dom-demo demo-pane">
+				<div class="box message">Thank you!</div>
+				<div class="box button">Click me</div>
+			</div>
+			<script src="dom-demo.js"></script>
+
+			<h3 id="layout-demo">Automatic Layout</h3>
+			<p>Parti can be treated as a constraint solver for laying out objects (say, for a graph visualisation).</p>
+			<p>In this example, nodes (particles with radii) are randomly placed in the field. Clicking Uncollide turns on the simulation and causes the nodes to sort themselves out and stop intersecting. Friction prevents the nodes from shooting away. Clicking Organise then adds hierarchical constraints to make the nodes self-organise.</p>
+			<div class="layout-demo demo-pane">
+				<div class="button">Uncollide</div>
+			</div>
+			<script src="layout-demo.js"></script>
+
+			<h3 id="cloth-demo">Simulate Cloth</h3>
+			<p>This example illustrates how Parti's simulations can also be rendered to an HTML5 canvas. Here, the particles are not displayed, and instead the constraints between particles are rendered as lines.</p>
+			<p>The cloth simulation will also interact with the mouse cursor.</p>
+			<div class="cloth-demo demo-pane">
+				<div class="button">Start</div>
+				<canvas class="cloth-demo-canvas" width="600" height="400"></canvas>
+			</div>
+			<script src="cloth-demo.js"></script>
+
+
+			<h2 id="what-cant-i-do">What <em>can't</em> I do with it?</h2>
+			<p>Parti can't declare unequivocal love for you, or explain the bleakness of the human condition, among other things.</p>
+
+
+			<h2 id="how-do-i-use">How do I use it?</h2>
+
+			<h3 id="models">Models</h3>
+			<h3 id="particles">Particles</h3>
+			<h3 id="constraints">Constraints</h3>
+			<h3 id="simulation">Simulation</h3>
+
+			<footer>
+				<p>Copyright &copy; 2013 Amanda Koh.</p>
+			</footer>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,122 @@
+body {
+	font-family: Helvetica, Arial, sans-serif;
+	background: #CCC;
+	margin: 0;
+}
+
+h1 {
+	margin: 0;
+	margin-top: 1rem;
+	font-size: 2rem;
+}
+
+h2 {
+	margin-top: 2rem;
+	font-size: 1.6rem;
+}
+
+h3 {
+	margin-top: 2rem;
+	font-size: 1.2rem;
+}
+
+footer {
+	margin-top: 96px;
+	font-size: 0.7rem;
+}
+
+.content {
+	padding: 32px;
+	background: white;
+	width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.demo-pane {
+	border: 1px solid #666;
+	width: 600px;
+	height: 400px;
+	overflow: hidden;
+	position: relative;
+}
+
+.line {
+  transform-origin: 0 100%;
+  height: 3px;
+  background: black;
+  position: absolute;
+}
+
+.dom-demo .box {
+	color: #666;
+	background: white;
+	font-size: 2rem;
+	position: absolute;
+	border: 1px solid #666;
+	height: 60px;
+	line-height: 60px;
+	text-align: center;
+}
+
+.dom-demo .message {
+	width: 200px;
+}
+
+.dom-demo .button {
+	cursor: pointer;
+	width: 1000px;
+	height: 70px;
+	line-height: 70px;
+}
+
+.dom-demo .chain {
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background: #666;
+}
+
+.layout-demo .node {
+	border: 1px solid #666;
+	position: absolute;
+}
+
+.layout-demo .button {
+	border-right: 1px solid #666;
+	border-bottom: 1px solid #666;
+	position: absolute;
+	width: 64px;
+	text-align: center;
+	padding: 8px 16px;
+	color: #666;
+	background: white;
+	cursor: pointer;
+}
+
+.layout-demo .button:hover {
+	background: #666;
+	color: white;
+}
+
+.cloth-demo .button {
+	border-right: 1px solid #666;
+	border-bottom: 1px solid #666;
+	position: absolute;
+	width: 64px;
+	text-align: center;
+	padding: 8px 16px;
+	color: #666;
+	background: white;
+	cursor: pointer;
+}
+
+.cloth-demo .button:hover {
+	background: #666;
+	color: white;
+}
+
+.cloth-demo .cloth-demo-canvas {
+	width: 600px;
+	height: 400px;
+}
