@@ -54,13 +54,34 @@
 
 	// And when the button is clicked...
 	buttonParticle.getData().click(function () {
-		if (animTimer)
+
+		// Reset if already started
+		if (animTimer) {
+			buttonParticle.posX = 300;
+			buttonParticle.posY = 295;
+			buttonParticle.prevPosX = buttonParticle.posX;
+			buttonParticle.prevPosY = buttonParticle.posY;
+
+			for (i = 0; i < chainParticles.length; ++i) {
+				chainParticles[i].posX = 300;
+				chainParticles[i].posY = 295 + (i / chainParticles.length) * 5;
+				chainParticles[i].prevPosX = chainParticles[i].posX;
+				chainParticles[i].prevPosY = chainParticles[i].posY;
+			}
+
+			window.clearInterval(animTimer);
+			animTimer = null;
+
+			$(this).text('Click me');
+
+			render();
 			return;
+		}
 
 		// Apply a slight force to cause the button particle to jump out of position
 		buttonParticle.applyImpulse(30, 10);
 
-		$(this).text('Clicked!');
+		$(this).text('Reset');
 
 		// Start a timer to keep updating the simulation
 		animTimer = window.setInterval(function () {
