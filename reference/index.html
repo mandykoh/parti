@@ -9,7 +9,7 @@
 	<body>
 		<div class="content">
 
-			<h1>Parti Reference</h1>
+			<h1>Parti</h1>
 
 			<h2>Contents</h2>
 			<ul class="contents">
@@ -31,13 +31,14 @@
 						<li><a href="#particles">Particles</a></li>
 						<li><a href="#constraints">Constraints</a></li>
 						<li><a href="#simulation">Simulation</a></li>
+						<li><a href="#shortcuts">Shortcuts</a></li>
 					</ul>
 				</li>
 			</ul>
 
 
 			<h2 id="what-is-it">What is it?</h2>
-			<p>Parti is a dots-and-sticks physics library for JavaScript.</p>
+			<p>Parti is a "dots-and-sticks" physics library for JavaScript.</p>
 			<p>You could also describe it as a physics simulator which uses <a href="http://en.wikipedia.org/wiki/Verlet_integration">Verlet integration</a> to iteratively and non-conservatively solve spatial constraints on a set of particles, if you're into that sort of thing.</p>
 
 
@@ -134,6 +135,11 @@ var data = particle.getData();
 particle.applyImpulse(x, y);
 			</pre>
 			<p>where <code>x</code> and <code>y</code> are the horizontal and vertical components of the force, respectively.</p>
+			<p>Particles can be removed from the simulation using the following:</p>
+			<pre>
+model.removeParticle(index);
+			</pre>
+			<p>where <code>index</code> is the index of the particle to be removed in the <code>model.particles</code> array. Note that this simply marks the particle for removal, and the particle will not actually be deleted until the next time <code>model.update()</code> is called.</p>
 
 			<h3 id="constraints">Constraints</h3>
 			<p>Constraints are the basic way to make particles in your simulation do interesting things. By default, all particles will be under a special constraint to ensure that they do not enter each other's radii. Further constraints can be added like this:</p>
@@ -147,7 +153,19 @@ model.addConstraint(constraint);
     apply: <em>function (particles) {}</em>
 }
 			</pre>
-			<p>The <code>apply()</code> function is passed an array of particles to act upon. Some constraints will use this, some won't (for example, if they only act on a single specific particle).</p>
+			<p>The <code>apply()</code> function is passed an array of particles to act upon. Some constraints will use this, some won't (for example, if they only act on a single specific particle). For example, you could set up a constraint to keep all particles within a rectangle (0, 0, 100, 100) like this:</p>
+			<pre>
+model.addConstraint({
+    apply: function (particles) {
+        for (var i = 0; i &lt; particles.length; ++i) {
+            particles[i].posX = Math.max(0, particles[i].posX);
+            particles[i].posX = Math.min(100, particles[i].posX);
+            particles[i].posY = Math.max(0, particles[i].posY);
+            particles[i].posY = Math.min(100, particles[i].posY);
+        }
+    }
+})
+			</pre>
 			<p>Parti comes with some basic, useful constraints:</p>
 			<pre>
 new Parti.DistanceConstraint(p1, p2, minDistance, maxDistance)
@@ -166,6 +184,7 @@ new Parti.PositionConstraint(particle, x, y)
 model.update(passes);
 			</pre>
 			<p>The <code>passes</code> parameter is optional; if present, it specifies the number of passes to calculate to attempt to satisfy all constraints. The default number of passes is 1. Higher values will mean less "loose" constraints, which translates to stiffer, less floppy or bendy structures, but will also require more computation.</p>
+			<p>For softbody animation, a lower number of passes is usually appropriate. For non-animated constraint solving problems like graph layout, a higher number of passes may be appropriate (where after one call to <code>update()</code>, you can be reasonably sure that all constraints are mostly satisfied).</p>
 			<p>After the <code>update()</code> method is called, the particles will be in new positions and the constraints will have been loosely met, more or less. The particles can then be processed like this:</p>
 			<pre>
 for (i = 0; i &lt; model.particles.length; ++i) {
@@ -176,6 +195,14 @@ for (i = 0; i &lt; model.particles.length; ++i) {
 }
 			</pre>
 			<p>For a continuous simulation, the basic approach is to do whatever needs to be done to all your particles (eg. apply impulse forces, etc), then call <code>update()</code>, then do something with the output, such as positioning DOM elements or rendering to a canvas. Then repeat the process.</p>
+
+			<h3 id="shortcuts">Shortcuts</h3>
+			<p>It's often useful to want to create a constraint between two existing particles that enforces their current distance, whatever that may be (a bit like putting a spring between them). Parti provides a shortcut to do that:</p>
+			<pre>
+var connectingParticles = model.linkParticles(p1, p2, segments, minStretch, maxStretch);
+			</pre>
+			<p>The <code>segments</code> parameter is a number specifying how many line segments (ie. constraints) to create between the two particles. If set to 1, this is similar to simply adding a <code>Parti.DistanceConstraint</code> between the two particles, where the minimum and maximum distances are set using the current distance between the two particles. If set to something higher than 1, then new particles will be created between the two particles, and constraints will be added between them like segments of a chain. The newly created particles are returned in an array.</p>
+			<p>The <code>minStretch</code> and <code>maxStretch</code> parameters are scaling factors for how much stretching is allowed for each segment. For example, setting <code>minStretch</code> to 0.0 will mean that all created segments can tolerate being squashed to zero length (like a <code>Parti.DistanceConstraint</code> with the minimum distance set to 0). Setting the <code>maxStretch</code> to 5.0 will mean that the segments will allow stretching to 5 times their original length.</p>
 
 
 			<footer>
