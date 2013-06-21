@@ -53,6 +53,13 @@ if (typeof(Parti) === 'undefined') {
 				segmentLength,
 				chainParticles = [];
 
+			if (typeof(segments) !== 'number')
+				segments = 1;
+			if (typeof(minStretch) !== 'number')
+				minStretch = 1;
+			if (typeof(maxStretch) !== 'number')
+				maxStretch = 1;
+
 			segmentLength = Math.sqrt((p1.posX - p2.posX) * (p1.posX - p2.posX) + (p1.posY - p2.posY) * (p1.posY - p2.posY)) / segments;
 
 			for (i = 0; i < segments - 1; ++i) {
