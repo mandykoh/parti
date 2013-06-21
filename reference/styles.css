@@ -19,7 +19,7 @@ h2 {
 
 h3 {
 	margin-top: 2rem;
-	font-size: 1.2rem;
+	font-size: 1.3rem;
 	font-weight: 400;
 }
 
@@ -124,6 +124,28 @@ footer {
 }
 
 .cloth-demo .cloth-demo-canvas {
+	width: 600px;
+	height: 400px;
+}
+
+.rigid-body-demo .button {
+	border-right: 1px solid #666;
+	border-bottom: 1px solid #666;
+	position: absolute;
+	width: 64px;
+	text-align: center;
+	padding: 8px 16px;
+	color: #666;
+	background: white;
+	cursor: pointer;
+}
+
+.rigid-body-demo .button:hover {
+	background: #666;
+	color: white;
+}
+
+.rigid-body-demo .rigid-body-demo-canvas {
 	width: 600px;
 	height: 400px;
 }

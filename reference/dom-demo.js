@@ -39,7 +39,7 @@
 
 	// Make a chain of particles linking the message and the button, with 7
 	// segments, where each link can stretch to 40 times the original length.
-	chainParticles = model.linkParticles(messageParticle, buttonParticle, 7, 0, 40.0);
+	chainParticles = model.linkParticles(messageParticle, buttonParticle, 7, 0, 40.0).particles;
 
 	// Create DOM elements to represent each link in the chain and attach them
 	// to the particles so we can retrieve them later.

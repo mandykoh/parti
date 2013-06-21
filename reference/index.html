@@ -21,6 +21,7 @@
 						<li><a href="#dom-demo">Animate DOM Elements</a></li>
 						<li><a href="#layout-demo">Automatic Layout</a></li>
 						<li><a href="#cloth-demo">Simulate Cloth</a></li>
+						<li><a href="#rigid-body-demo">Rigid Bodies</a></li>
 					</ul>
 				</li>
 				<li><a href="#what-cant-i-do">What <em>can't</em> I do with it?</a></li>
@@ -79,6 +80,16 @@
 			<script src="cloth-demo.js"></script>
 			<p>See <a href="https://github.com/naucera/parti/blob/master/reference/cloth-demo.js">cloth-demo.js</a></p>
 
+			<h3 id="rigid-body-demo">Rigid Bodies</h3>
+			<p>This example also renders to a canvas, and demonstrates how rigid body physics can be approximated using constraints.</p>
+			<p>By throwing a box at a wall, this also demonstrates how wall and floor friction can be simulated using <a href="#applyDrag"><code>applyDrag()</code></a>.</p>
+			<div class="rigid-body-demo demo-pane">
+				<div class="button">Start</div>
+				<canvas class="rigid-body-demo-canvas" width="600" height="400"></canvas>
+			</div>
+			<script src="rigid-body-demo.js"></script>
+			<p>See <a href="https://github.com/naucera/parti/blob/master/reference/rigid-body-demo.js">rigid-body-demo.js</a></p>
+
 
 			<h2 id="what-cant-i-do">What <em>can't</em> I do with it?</h2>
 			<p>Parti can't declare unequivocal love for you (despite loving you very much), or explain the bleakness of the human condition, among other things.</p>
@@ -95,9 +106,10 @@ var model = new Parti.Model(options);
 			<pre>
 {
     radius: <em>number</em>,    // default radius for particles, 0 if not specified
-    friction: <em>number</em>,  // default friction for particles, 0 if not specified
+    friction: <em>number</em>,  // default global 2d friction for particles, 0 if not specified
 }
 			</pre>
+			<p>The friction specified this way is the global friction for the simulation, meaning that it always affects all particles equally. If your simulation is a 2D view of a scene from the side, then this might be analogous to air friction. If your simulation is a 2D view from above, then this might be analogous to ground friction.</p>
 			<p>Models have the following properties:</p>
 			<pre>
 {
@@ -115,7 +127,7 @@ var particle = model.newParticle(x, y, options);
 			<pre>
 {
     radius: <em>number</em>,     // radius for the particle, model default if not specified
-    friction: <em>number</em>,   // friction for the particle, model default if not specified
+    friction: <em>number</em>,   // global friction for the particle, model default if not specified
     data: <em>anything</em>,     // arbitrary value to associate with the particle
 }
 			</pre>
@@ -137,6 +149,11 @@ var data = particle.getData();
 			<pre>
 particle.setPos(x, y);
 			</pre>
+			<p id="applyDrag">Instantaneous drag can be applied to a particle like this:</p>
+			<pre>
+particle.applyDrag(d);
+			</pre>
+			<p>where <code>d</code> is a scaling factor for how much to drag the particle's movement (a value of 0.0 would bring a particle to an immediate stop).</p>
 			<p>Instantaneous forces can be applied to a particle like this:</p>
 			<pre>
 particle.applyImpulse(x, y);
@@ -162,7 +179,7 @@ model.addConstraint(constraint);
 			</pre>
 			<p>The <code>apply()</code> function is passed an array of particles to act upon. Some constraints will use this, some won't (for example, if they only act on a single specific particle). For example, you could set up a constraint to keep all particles within a rectangle (0, 0, 100, 100) like this:</p>
 			<pre>
-model.addConstraint({
+var constraint = model.addConstraint({
     apply: function (particles) {
         for (var i = 0; i &lt; particles.length; ++i) {
             particles[i].posX = Math.max(0, particles[i].posX);
@@ -173,6 +190,7 @@ model.addConstraint({
     }
 })
 			</pre>
+			<p>For convenience, <code>addConstraint()</code> also returns the newly added constraint.</p>
 			<p>Parti comes with some basic, useful constraints:</p>
 			<pre>
 new Parti.DistanceConstraint(p1, p2, minDistance, maxDistance)
@@ -206,10 +224,17 @@ for (i = 0; i &lt; model.particles.length; ++i) {
 			<h3 id="shortcuts">Shortcuts</h3>
 			<p>It's often useful to want to create a constraint between two existing particles that enforces their current distance, whatever that may be (a bit like putting a spring between them). Parti provides a shortcut to do that:</p>
 			<pre>
-var connectingParticles = model.linkParticles(p1, p2, segments, minStretch, maxStretch);
+var created = model.linkParticles(p1, p2, segments, minStretch, maxStretch);
 			</pre>
-			<p>The <code>segments</code> parameter is a number specifying how many line segments (ie. constraints) to create between the two particles. If set to 1, this is similar to simply adding a <code>Parti.DistanceConstraint</code> between the two particles, where the minimum and maximum distances are set using the current distance between the two particles. If set to something higher than 1, then new particles will be created between the two particles, and constraints will be added between them like segments of a chain. The newly created particles are returned in an array.</p>
-			<p>The <code>minStretch</code> and <code>maxStretch</code> parameters are scaling factors for how much stretching is allowed for each segment. For example, setting <code>minStretch</code> to 0.0 will mean that all created segments can tolerate being squashed to zero length (like a <code>Parti.DistanceConstraint</code> with the minimum distance set to 0). Setting the <code>maxStretch</code> to 5.0 will mean that the segments will allow stretching to 5 times their original length.</p>
+			<p>The optional <code>segments</code> parameter is a number specifying how many line segments (ie. constraints) to create between the two particles. If set to 1 (which is also the default), this is similar to simply adding a <code>Parti.DistanceConstraint</code> between the two particles, where the minimum and maximum distances are set using the current distance between the two particles. If set to something higher than 1, then new particles will be created between the two particles, and constraints will be added between them like segments of a chain.</p>
+			<p>The optional <code>minStretch</code> and <code>maxStretch</code> parameters are scaling factors for how much stretching is allowed for each segment. For example, setting <code>minStretch</code> to 0.0 will mean that all created segments can tolerate being squashed to zero length (like a <code>Parti.DistanceConstraint</code> with the minimum distance set to 0). Setting the <code>maxStretch</code> to 5.0 will mean that the segments will allow stretching to 5 times their original length. The default for both is 1.0.</p>
+			<p>The returned object has the following properties:</p>
+			<pre>
+{
+    particles: <em>array of Particles</em>,      // Newly created particles
+    constraints: <em>array of Constraints</em>,  // Newly created constraints
+}
+			</pre>
 
 
 			<footer>
