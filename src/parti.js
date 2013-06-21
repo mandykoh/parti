@@ -44,6 +44,7 @@ if (typeof(Parti) === 'undefined') {
 
 		Parti.Model.prototype.addConstraint = function (c) {
 			this.constraints.push(c);
+			return c;
 		};
 
 		Parti.Model.prototype.linkParticles = function (p1, p2, segments, minStretch, maxStretch) {
@@ -51,7 +52,7 @@ if (typeof(Parti) === 'undefined') {
 				p,
 				lastP = p2,
 				segmentLength,
-				chainParticles = [];
+				created = { particles: [], constraints: [] };
 
 			if (typeof(segments) !== 'number')
 				segments = 1;
@@ -67,14 +68,14 @@ if (typeof(Parti) === 'undefined') {
 					(p1.posX - p2.posX) * (i / segments) + p2.posX,
 					(p1.posY - p2.posY) * (i / segments) + p2.posY);
 
-				chainParticles.push(p);
-				this.addConstraint(new Parti.DistanceConstraint(p, lastP, segmentLength * minStretch, segmentLength * maxStretch));
+				created.particles.push(p);
+				created.constraints.push(this.addConstraint(new Parti.DistanceConstraint(p, lastP, segmentLength * minStretch, segmentLength * maxStretch)));
 				lastP = p;
 			}
 
-			this.addConstraint(new Parti.DistanceConstraint(lastP, p1, segmentLength * minStretch, segmentLength * maxStretch));
+			created.constraints.push(this.addConstraint(new Parti.DistanceConstraint(lastP, p1, segmentLength * minStretch, segmentLength * maxStretch)));
 
-			return chainParticles;
+			return created;
 		};
 
 		Parti.Model.prototype.newParticle = function (x, y, options) {
@@ -177,6 +178,11 @@ if (typeof(Parti) === 'undefined') {
 
 			if (typeof(options.data) !== 'undefined')
 				this.setData(options.data);
+		};
+
+		Particle.prototype.applyDrag = function (d) {
+			this.prevPosX += (this.posX - this.prevPosX) * d;
+			this.prevPosY += (this.posY - this.prevPosY) * d;
 		};
 
 		Particle.prototype.applyImpulse = function (x, y) {
