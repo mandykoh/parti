@@ -133,6 +133,10 @@ var data = particle.getData();
     prevPosY: <em>number</em>,  // Last vertical position
 }
 			</pre>
+			<p>A particle can be placed at a specific position like this (which will cancel all forces that have been acting on it):</p>
+			<pre>
+particle.setPos(x, y);
+			</pre>
 			<p>Instantaneous forces can be applied to a particle like this:</p>
 			<pre>
 particle.applyImpulse(x, y);

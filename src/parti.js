@@ -178,6 +178,13 @@ if (typeof(Parti) === 'undefined') {
 			this.data = v;
 		};
 
+		Particle.prototype.setPos = function (x, y) {
+			this.posX = x;
+			this.posY = y;
+			this.prevPosX = x;
+			this.prevPosY = y;
+		};
+
 
 
 		Parti.enforceDistance = function (p1, p2, min, max) {

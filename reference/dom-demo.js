@@ -57,17 +57,10 @@
 
 		// Reset if already started
 		if (animTimer) {
-			buttonParticle.posX = 300;
-			buttonParticle.posY = 295;
-			buttonParticle.prevPosX = buttonParticle.posX;
-			buttonParticle.prevPosY = buttonParticle.posY;
+			buttonParticle.setPos(300, 295);
 
-			for (i = 0; i < chainParticles.length; ++i) {
-				chainParticles[i].posX = 300;
-				chainParticles[i].posY = 295 + (i / chainParticles.length) * 5;
-				chainParticles[i].prevPosX = chainParticles[i].posX;
-				chainParticles[i].prevPosY = chainParticles[i].posY;
-			}
+			for (i = 0; i < chainParticles.length; ++i)
+				chainParticles[i].setPos(300, 295 + (i / chainParticles.length) * 5);
 
 			window.clearInterval(animTimer);
 			animTimer = null;
