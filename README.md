@@ -2,7 +2,7 @@ Parti
 =====
 
 
-Parti is a dots-and-sticks physics library for JavaScript.
+Parti is a "dots-and-sticks" physics library for JavaScript.
 
 You could also describe it as a physics simulator which uses [Verlet integration](http://en.wikipedia.org/wiki/Verlet_integration) to iteratively and non-conservatively solve spatial constraints on a set of particles, if you're into that sort of thing.
 
