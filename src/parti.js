@@ -1,3 +1,10 @@
+// Parti
+//
+// Particle-based physics simulator library for JavaScript.
+//
+// This project can be found at:
+// https://github.com/naucera/parti
+//
 // Copyright (C) 2013 Amanda Koh
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
