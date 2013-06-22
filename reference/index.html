@@ -223,7 +223,7 @@ for (i = 0; i &lt; model.particles.length; ++i) {
 			<p>For a continuous simulation, the basic approach is to do whatever needs to be done to all your particles (eg. apply impulse forces, etc), then call <code>update()</code>, then do something with the output, such as positioning DOM elements or rendering to a canvas. Then repeat the process.</p>
 
 			<h3 id="shortcuts">Shortcuts</h3>
-			<p>It's often useful to want to create a constraint between two existing particles that enforces their current distance, whatever that may be (a bit like putting a spring between them). Parti provides a shortcut to do that:</p>
+			<p>It's often useful to want to create a constraint between two existing particles that enforces their current distance, whatever that may be (a bit like putting a spring or pole between them). Parti provides a shortcut to do that:</p>
 			<pre>
 var created = model.linkParticles(p1, p2, segments, minStretch, maxStretch);
 			</pre>
