@@ -59,26 +59,14 @@
 		boxParticles[0].applyImpulse(Math.min(boxSize, Math.random(100) + 80), Math.min(boxSize, Math.random() * 60 + 30));
 		boxParticles[1].applyImpulse(Math.min(boxSize, Math.random(100) + 80), Math.min(boxSize, Math.random() * 60 + 30));
 
-		// Keep particles inside the pane, and add a little drag if they touch the walls
+		// Keep particles inside the pane walls
 		model.addConstraint({
 			apply: function (particles) {
 				for (var i = 0; i < particles.length; ++i) {
-					if (particles[i].posX < 0) {
-						particles[i].posX = 0;
-						particles[i].applyDrag(0.03);
-					}
-					else if (particles[i].posX > canvas.width) {
-						particles[i].posX = canvas.width;
-						particles[i].applyDrag(0.03);
-					}
-					if (particles[i].posY < 0) {
-						particles[i].posY = 0;
-						particles[i].applyDrag(0.03);
-					}
-					else if (particles[i].posY > canvas.height) {
-						particles[i].posY = canvas.height;
-						particles[i].applyDrag(0.03);
-					}
+					particles[i].posX = Math.max(0, particles[i].posX);
+					particles[i].posX = Math.min(canvas.width, particles[i].posX);
+					particles[i].posY = Math.max(0, particles[i].posY);
+					particles[i].posY = Math.min(canvas.height, particles[i].posY);
 				}
 			}
 		});
@@ -97,10 +85,23 @@
 			$(this).text('Reset');
 
 			animTimer = window.setInterval(function () {
+				var i;
 
-				// Apply a downward force to simulate gravity
-				for (var i = 0; i < model.particles.length; ++i)
+				for (i = 0; i < model.particles.length; ++i) {
+
+					// Apply drag to simulate surface friction for any particles touching the walls
+					if (Math.abs(model.particles[i].posX) < 0.001)
+						model.particles[i].applyDrag(0.2);
+					else if (Math.abs(canvas.width - model.particles[i].posX) < 0.001)
+						model.particles[i].applyDrag(0.2);
+					else if (Math.abs(model.particles[i].posY) < 0.001)
+						model.particles[i].applyDrag(0.2);
+					else if (Math.abs(canvas.height - model.particles[i].posY) < 0.001)
+						model.particles[i].applyDrag(0.2);
+
+					// Apply a downward force to simulate gravity
 					model.particles[i].applyImpulse(0, -1);
+				}
 
 				model.update(8);
 				render();

@@ -192,6 +192,7 @@ var constraint = model.addConstraint({
 })
 			</pre>
 			<p>For convenience, <code>addConstraint()</code> also returns the newly added constraint.</p>
+			<p>A constraint's job should solely be to update a particle's <code>posX</code> and <code>posY</code> so that the constraint is met. Although you can do other things to a particle (such as using <code>applyImpulse()</code> to add forces) within a constraint, the recommended approach is to do them in your custom code before calling <code>model.update()</code>.</p>
 			<p>Parti comes with some basic, useful constraints:</p>
 			<pre>
 new Parti.DistanceConstraint(p1, p2, minDistance, maxDistance)
