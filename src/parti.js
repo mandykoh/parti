@@ -160,10 +160,7 @@ if (typeof(Parti) === 'undefined') {
 		};
 
 		Parti.PositionConstraint.prototype.apply = function (particles) {
-			this.particle.posX = this.x;
-			this.particle.posY = this.y;
-			this.particle.prevPosX = this.x;
-			this.particle.prevPosY = this.y;
+			this.particle.setPos(this.x, this.y);
 		};
 
 
