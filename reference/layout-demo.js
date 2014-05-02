@@ -3,7 +3,7 @@
 		i,
 		p,
 		mainNode,
-		animTimer,
+		animFrame,
 		stage = 'uncollide';
 
 
@@ -84,15 +84,19 @@
 	}
 
 
+	function updateAndRender() {
+		model.update(6);
+		render();
+		animFrame = window.requestAnimationFrame(updateAndRender);
+	}
+
+
 	$('.layout-demo .button').click(function () {
 		if (stage === 'uncollide') {
 			stage = 'organise';
 			$(this).text('Organise');
 
-			animTimer = window.setInterval(function () {
-				model.update(6);
-				render();
-			}, 30);
+			animFrame = window.requestAnimationFrame(updateAndRender);
 		}
 		else if (stage === 'organise') {
 			stage = 'reset';
@@ -103,8 +107,8 @@
 			stage = 'uncollide';
 			$(this).text('Uncollide');
 
-			window.clearInterval(animTimer);
-			animTimer = null;
+			window.cancelAnimationFrame(animFrame);
+			animFrame = null;
 
 			reset();
 		}

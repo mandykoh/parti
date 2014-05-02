@@ -5,7 +5,7 @@
 		messageParticle = model.newParticle(300, 300, { data: message }),
 		buttonParticle = model.newParticle(300, 295, { data: button }),
 		chainParticles,
-		animTimer,
+		animFrame,
 		i;
 
 
@@ -52,18 +52,40 @@
 	model.addConstraint(new Parti.PositionConstraint(messageParticle, messageParticle.posX, messageParticle.posY));
 
 
+	// Set up a function to update the simulation
+	function updateAndRender() {
+
+		// Apply a downward force to simulate gravity
+		for (var i = 0; i < model.particles.length; ++i)
+			model.particles[i].applyImpulse(0, -1);
+
+		// Update the model (using 2 passes to lend stiffness to the chain links)
+		if (model.update(2)) {
+			window.cancelAnimationFrame(animFrame);
+			animFrame = null;
+			render();
+			return;
+		}
+
+		// Update the DOM element positions based on the particles
+		render();
+
+		animFrame = window.requestAnimationFrame(updateAndRender);
+	}
+
+
 	// And when the button is clicked...
 	buttonParticle.getData().click(function () {
 
 		// Reset if already started
-		if (animTimer) {
+		if (animFrame) {
 			buttonParticle.setPos(300, 295);
 
 			for (i = 0; i < chainParticles.length; ++i)
 				chainParticles[i].setPos(300, 295 + (i / chainParticles.length) * 5);
 
-			window.clearInterval(animTimer);
-			animTimer = null;
+			window.cancelAnimationFrame(animFrame);
+			animFrame = null;
 
 			$(this).text('Click me');
 
@@ -72,27 +94,12 @@
 		}
 
 		// Apply a slight force to cause the button particle to jump out of position
-		buttonParticle.applyImpulse(30, 10);
+		buttonParticle.applyImpulse(20, 10);
 
 		$(this).text('Reset');
 
-		// Start a timer to keep updating the simulation
-		animTimer = window.setInterval(function () {
-
-			// Apply a downward force to simulate gravity
-			for (var i = 0; i < model.particles.length; ++i)
-				model.particles[i].applyImpulse(0, -2);
-
-			// Update the model (using 4 passes to lend stiffness to the chain links)
-			if (model.update(4)) {
-				console.log('end!');
-				window.clearInterval(animTimer);
-			}
-
-			// Update the DOM element positions based on the particles
-			render();
-
-		}, 30);
+		// Start animation to keep updating the simulation
+		animFrame = window.requestAnimationFrame(updateAndRender);
 	});
 
 	render();
